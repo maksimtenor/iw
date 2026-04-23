@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система премирования</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .gift-icon {
+            font-size: 56px;
+        }
+
+        .main-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .main-info h2 {
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+        }
+
+        .card.buymedia::before {
+            background: linear-gradient(90deg, #2196F3, #03A9F4);
+        }
+
+        .card.backend::before {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+        }
+
+        .card.ios::before {
+            background: linear-gradient(90deg, #FF9800, #FFC107);
+        }
+
+        .card.devops::before {
+            background: linear-gradient(90deg, #9C27B0, #E91E63);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+
+        .card-icon {
+            font-size: 48px;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+        }
+
+        .card.buymedia .card-icon {
+            background: linear-gradient(135deg, #2196F3, #03A9F4);
+        }
+
+        .card.backend .card-icon {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+        }
+
+        .card.ios .card-icon {
+            background: linear-gradient(135deg, #FF9800, #FFC107);
+        }
+
+        .card.devops .card-icon {
+            background: linear-gradient(135deg, #9C27B0, #E91E63);
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a237e;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .card-content {
+            margin-bottom: 20px;
+        }
+
+        .points-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .points-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .points-list li:last-child {
+            border-bottom: none;
+        }
+
+        .points-list li::before {
+            content: '•';
+            color: #667eea;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .bonus-table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+
+        .bonus-table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .bonus-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bonus-value {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .max-bonus {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 15px;
+        }
+
+        .info-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-section h2 {
+            color: #1a237e;
+            font-size: 32px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .info-card h3 {
+            color: #1a237e;
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #ffd200 0%, #f7971e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-info h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>
+            <span class="gift-icon">🎁</span>
+            Система премирования на 04.2026
+        </h1>
+    </div>
+
+    <div class="cards-grid">
+        <!-- Buymedia + Тизернет -->
+        <div class="card buymedia">
+            <div class="card-header">
+                <div class="card-icon">🚀</div>
+                <div>
+                    <div class="card-title">Buymedia + Тизернет</div>
+                    <div class="card-subtitle">Премия засчитывается при наборе от 5 баллов<br>Меньше 5 = 0%</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <ul class="points-list">
+                    <li>Выполнено от 5 задач? <strong>+3 балла</strong></li>
+                    <li>Оптимизировал | Улучшил | Автоматизировал (например рутину)? <strong>+2 балла</strong></li>
+                    <li>Проверил от 5 PR за месяц? <strong>+2 балла</strong></li>
+                    <li>Оказал помощь другому отделу (к примеру devops)? <strong>+1 балл</strong></li>
+                    <li>Оценка PM отдела <strong>+1 / -1 / 0 баллы</strong></li>
+                    <li>Работал вне рабочего времени? (вых, после конца рабочего дня) <strong>+2 балла</strong></li>
+                    <li>Ведешь документацию? (к методам, системе, устранению проблем и т.д) <strong>+1 балл</strong></li>
+                </ul>
+                <table class="bonus-table">
+                    <tr>
+                        <td><strong>Итого:</strong> </td>
+                        <td class="bonus-value">1 балл = 1%</td>
+                    </tr>
+                </table>
+                <div class="max-bonus">Максимум +10%</div>
+            </div>
+        </div>
+
+        <!-- Backend + Frontend -->
+        <div class="card backend">
+            <div class="card-header">
+                <div class="card-icon">💻</div>
+                <div>
+                    <div class="card-title">Backend + Frontend</div>
+                    <div class="card-subtitle">
+                        - Набор баллов → Story Points в Jira. От 1 до 3 баллов, где: 1 легкие, 2 средние, 3 сложные задачи<br>
+                        - Оценивает задачи технический руководитель<br>
+                        - Если Sotry Points не добавлен к задаче, считается по умолчанию как +1 балл</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <ul class="points-list">
+                    <li>Задачи (за выполненную в "Готово")<strong>1-3 балла</strong></li>
+                    <li>Оптимизировал | Улучшил | Автоматизировал (например рутину)? <strong>+2 балла</strong></li>
+                    <li>Проверил от 5 PR за месяц? <strong>+2 балла</strong></li>
+                    <li>Оказал помощь другому отделу (к примеру devops)? <strong>+1 балл</strong></li>
+                    <li>Оценка PM отдела <strong>+2 / -2 / 0 баллы</strong></li>
+                    <li>Работал вне рабочего времени? (вых, после конца рабочего дня) <strong>+1 балл</strong></li>
+                    <li>Ведешь документацию? (к методам, системе, устранению проблем и т.д) <strong>+1 балл</strong></li>
+                </ul>
+                <table class="bonus-table">
+                    <tr>
+                        <td>20+ баллов</td>
+                        <td class="bonus-value">15%</td>
+                    </tr>
+                    <tr>
+                        <td>15 баллов</td>
+                        <td class="bonus-value">10%</td>
+                    </tr>
+                    <tr>
+                        <td>10 баллов</td>
+                        <td class="bonus-value">5%</td>
+                    </tr>
+                    <tr>
+                        <td>7 баллов</td>
+                        <td class="bonus-value">3%</td>
+                    </tr>
+                    <tr>
+                        <td>Меньше?</td>
+                        <td class="bonus-value" style="color: red">0%</td>
+                    </tr>
+                </table>
+                <div class="max-bonus">Максимум +15%</div>
+            </div>
+        </div>
+
+        <!-- iOS -->
+        <div class="card ios">
+            <div class="card-header">
+                <div class="card-icon">🍎</div>
+                <div>
+                    <div class="card-title">iOS</div>
+                    <div class="card-subtitle">Премия засчитывается при наборе от 5 баллов<br>Меньше 5 = 0%</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <ul class="points-list">
+                    <li>Выполнено от 5 задач? <strong>+3 балла</strong></li>
+                    <li>Проверил от 5 PR за месяц? <strong>+2 балла</strong></li>
+                    <li>Работал с backend задачами, в этом месяце ? <strong>+3 балла</strong></li>
+                    <li>Оценка PM отдела <strong>+1 / -1 / 0 баллы</strong></li>
+                    <li>Работал вне рабочего времени? (вых, после конца рабочего дня) <strong>+1 балл</strong></li>
+                    <li>Ведешь документацию? (к методам, системе, устранению проблем и т.д) <strong>+1 балл</strong></li>
+                </ul>
+                <table class="bonus-table">
+                    <tr>
+                        <td><strong>Итого:</strong> </td>
+                        <td class="bonus-value">1 балл = 1%</td>
+                    </tr>
+                </table>
+                <div class="max-bonus">Максимум +10%</div>
+            </div>
+        </div>
+
+        <!-- DevOps -->
+        <div class="card devops">
+            <div class="card-header">
+                <div class="card-icon">⚙️</div>
+                <div>
+                    <div class="card-title">DevOps</div>
+                    <div class="card-subtitle">Премия засчитывается при наборе от 5 баллов<br>Меньше 5 = 0%</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <ul class="points-list">
+                    <li>Процент времени ответа ≥85% <strong>+2%</strong></li>
+                    <li>Фидбэк PM Juddy <strong>+2 / -2 / 0</strong></li>
+                    <li>Фидбэк PM BuyMedia <strong>+2 / -2 / 0</strong></li>
+                    <li>Составил подробный постмортем с Action Items? <strong>+1 балл</strong></li>
+                    <li>Выполнил Action Items? <strong>+1 балл</strong></li>
+                    <li>Оптимизировал | Улучшил | Автоматизировал (например рутину)? <strong>+1 балл</strong></li>
+                    <li>Работал вне рабочего времени? (вых, после конца рабочего дня) <strong>+2 балла</strong></li>
+                    <li>Ведешь документацию? (к методам, системе, устранению проблем и т.д) <strong>+1 балл</strong></li>
+                </ul>
+                <div class="max-bonus">Максимум +10%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h2>📋 Важные пояснения</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>🔧 Оптимизация</h3>
+                <p>Улучшение производительности сервисов и кода, подтверждённое результатами. Отслеживаем момент с
+                    помощью изменений в коде, по задачам или после предоставления доказательств улучшений от самого
+                    разработчика.</p>
+            </div>
+            <div class="info-card">
+                <h3>📝 Постмортем</h3>
+                <p>Анализ инцидента после его решения:<br>
+                    • Что случилось? (хронология)<br>
+                    • Почему случилось? (коренная причина)<br>
+                    • Как мы это починили?<br>
+                    • Как предотвратить в будущем?<br>
+                    <strong>В задокументированном виде!</strong></p>
+            </div>
+            <div class="info-card">
+                <h3>⚡ Скорость ответа</h3>
+                <p>Фиксируем время между сообщением пользователя и первым ответом в чате "IW: technical issues".<br><br>
+                    <strong>Формула:</strong><br>
+                    (кол-во ответов ≤15 мин / все ответы) × 100%</p>
+            </div>
+            <div class="info-card">
+                <h3>🤖 Автоматизация</h3>
+                <p>Автоматизация рутинных процессов:<br>
+                    • Скрипты очистки старых логов<br>
+                    • Авто-перезапуск упавшего сервиса<br>
+                    • Уведомления о неиспользуемых ресурсах<br>
+                    • Автоматический бэкап конфигов</p>
+            </div>
+            <div class="info-card">
+                <h3>✅ Action Items</h3>
+                <p>Конкретные задачи, чтобы инцидент не повторился:<br>
+                    • Настроить алерты на дисковое пространство<br>
+                    • Добавить автоматическое масштабирование<br>
+                    • Обновить документацию по восстановлению</p>
+            </div>
+            <div class="info-card">
+                <h3>🔄 PR (Pull Request)</h3>
+                <p>Проверка кода в битбакете, на предмет ошибок, синтаксиса и прочих моментов другими коллегами
+                    (разработчиками) для уменьшения шанса появления в продакшене багов, легаси (старого или плохого)
+                    кода и прочих моментов связанных с кодовой составляющей.</p>
+            </div>
+            <div class="info-card">
+                <h3>🧑‍💼 PM</h3>
+                <p>Продакт менеджер (Андрей, Катя, Рома) - старший менеджер.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add animation on scroll
+    const cards = document.querySelectorAll('.card, .info-card');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, {threshold: 0.1});
+
+    cards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+    });
+</script>
+</body>
+</html>
